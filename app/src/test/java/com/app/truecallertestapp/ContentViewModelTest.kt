@@ -59,7 +59,7 @@ class ContentViewModelTest {
 
     @Test
     fun fetchContentSuccessTestCase() = runTest(testScheduler) {
-        val mockText = "This is some sample fetched text data."
+        val mockText = "This is some sample fetched text data"
         val mock15thChar = 'a'
         val mockEvery15th = listOf('a', 'e')
         val mockWordFreq = mapOf("this" to 1, "is" to 1,"some" to 1,"sample" to 1,"fetched" to 1,"text" to 1, "data" to 1)

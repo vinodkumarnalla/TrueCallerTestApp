@@ -5,13 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.app.truecallertestapp.common.AppConstants
 import com.app.truecallertestapp.common.TextAnalysisHelper
 import com.app.truecallertestapp.data.common.Resource
+import com.app.truecallertestapp.di.IoDispatcher
 import com.app.truecallertestapp.domain.usecase.FetchContentUseCase
-import com.app.truecallertestapp.ui.di.IoDispatcher
 import com.app.truecallertestapp.ui.events.ContentIntent
 import com.app.truecallertestapp.ui.state.ContentState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

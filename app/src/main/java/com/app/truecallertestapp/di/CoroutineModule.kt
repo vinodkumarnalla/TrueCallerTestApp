@@ -1,4 +1,4 @@
-package com.app.truecallertestapp.ui.di
+package com.app.truecallertestapp.di
 
 import dagger.Module
 import dagger.Provides
