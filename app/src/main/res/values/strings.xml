@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TrueCallerTestApp</string>
+    <string name="fetch_content">Load Website Content</string>
+</resources>
