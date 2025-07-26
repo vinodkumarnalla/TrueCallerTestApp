@@ -42,42 +42,60 @@ class ContentViewModel @Inject constructor(
             _contentState.update {
                 it.copy(isLoading = true, error = null)
             }
+            var errorCount = 0
 
-            when (val response = fetchContentUseCase.invoke(AppConstants.WEBSITE_URL)) {
-                is Resource.Success -> {
-                    _contentState.update { it.copy(isLoading = false) }
-
-                    val text = response.data
-
-                    val char15thDeferred = async { textHelper.get15thCharacter(text) }
-                    val every15thDeferred = async { textHelper.getEvery15thCharacter(text) }
-                    val wordFreqDeferred = async { textHelper.getWordFrequencies(text) }
-
-                    // Await and update state as each completes
-                    val char15th = char15thDeferred.await()
-                    _contentState.update { it.copy(char15th = char15th) }
-
-                    val every15th = every15thDeferred.await()
-                    _contentState.update { it.copy(every15th = every15th) }
-
-                    val wordFreq = wordFreqDeferred.await()
-                    _contentState.update {
-                        it.copy(
-                            wordCounts = wordFreq,
-                            isLoading = false
-                        )
-                    }
-                }
-
-                is Resource.Error -> {
-                    _contentState.update {
-                        it.copy(
-                            error = response.message ,
-                            isLoading = false
-                        )
+            val char15thDeferred = async {
+                when (val res = fetchContentUseCase.invoke(AppConstants.WEBSITE_URL)) {
+                    is Resource.Success -> textHelper.get15thCharacter(res.data)
+                    is Resource.Error -> {
+                        errorCount++
+                        null
                     }
                 }
             }
+
+            val every15thDeferred = async {
+                when (val res = fetchContentUseCase.invoke(AppConstants.WEBSITE_URL)) {
+                    is Resource.Success -> textHelper.getEvery15thCharacter(res.data)
+                    is Resource.Error -> {
+                        errorCount++
+                        null
+                    }
+                }
+            }
+
+            val wordFreqDeferred = async {
+                when (val res = fetchContentUseCase.invoke(AppConstants.WEBSITE_URL)) {
+                    is Resource.Success -> textHelper.getWordFrequencies(res.data)
+                    is Resource.Error -> {
+                        errorCount++
+                        null
+                    }
+                }
+            }
+
+            val char15th = char15thDeferred.await()
+            char15th?.let {char ->
+                _contentState.update { state -> state.copy(char15th = char) }
+            }
+
+            val every15th = every15thDeferred.await()
+            every15th?.let {char->
+                _contentState.update { state -> state.copy(every15th = char)}
+            }
+
+            val wordFreq = wordFreqDeferred.await()
+            wordFreq?.let {words->
+                _contentState.update { state -> state.copy(wordCounts = words)}
+            }
+            if (errorCount == 3) {
+                _contentState.update {
+                    it.copy(error = "Failed to fetch content from all sources", isLoading = false)
+                }
+            } else {
+                _contentState.update { it.copy(isLoading = false) }
+            }
+
         }
     }
 
