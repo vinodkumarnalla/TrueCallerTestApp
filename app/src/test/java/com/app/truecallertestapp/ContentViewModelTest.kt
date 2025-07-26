@@ -83,7 +83,7 @@ class ContentViewModelTest {
     @Test
     fun fetchContentErrorTestCase() = runTest(testScheduler) {
 
-        val errorMsg = "Network Error"
+        val errorMsg = "Failed to fetch content from all sources"
         `when`(fetchContentUseCase.invoke(AppConstants.WEBSITE_URL)).thenReturn(Resource.Error(errorMsg))
         viewModel.handleIntent(ContentIntent.FetchContentButtonClicked)
 
